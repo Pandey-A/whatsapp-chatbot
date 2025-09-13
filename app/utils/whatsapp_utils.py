@@ -154,10 +154,14 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
-                time.sleep(2)
+                # Immediately send a plain text message
+                need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
+                send_message(need_help)
+                # Wait a moment, then send CTA buttons for reliability
+                time.sleep(1.5)
                 cta = get_cta_button_input(
                     wa_id,
-                    body_text="Need help?",
+                    body_text="Contact options:",
                     button1_id="contact_sales_btn",
                     button1_title="Contact to Sales Person",
                     button2_id="contact_queries_btn",
@@ -176,10 +180,12 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
-                time.sleep(2)
+                need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
+                send_message(need_help)
+                time.sleep(1.5)
                 cta = get_cta_button_input(
                     wa_id,
-                    body_text="Need help?",
+                    body_text="Contact options:",
                     button1_id="contact_sales_btn",
                     button1_title="Contact to Sales Person",
                     button2_id="contact_queries_btn",
@@ -198,10 +204,12 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
-                time.sleep(2)
+                need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
+                send_message(need_help)
+                time.sleep(1.5)
                 cta = get_cta_button_input(
                     wa_id,
-                    body_text="Need help?",
+                    body_text="Contact options:",
                     button1_id="contact_sales_btn",
                     button1_title="Contact to Sales Person",
                     button2_id="contact_queries_btn",
