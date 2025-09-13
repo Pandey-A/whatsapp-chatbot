@@ -1,3 +1,19 @@
+def get_cta_button_input(recipient, body_text, button1_id, button1_title, button2_id, button2_title):
+    return json.dumps({
+        "messaging_product": "whatsapp",
+        "to": recipient,
+        "type": "interactive",
+        "interactive": {
+            "type": "button",
+            "body": {"text": body_text},
+            "action": {
+                "buttons": [
+                    {"type": "reply", "reply": {"id": button1_id, "title": button1_title}},
+                    {"type": "reply", "reply": {"id": button2_id, "title": button2_title}}
+                ]
+            }
+        }
+    })
 # New: Generate interactive message with reply buttons
 def get_interactive_reply_button_input(recipient, body_text, button1_id, button1_title, button2_id, button2_title):
     return json.dumps({
@@ -125,26 +141,7 @@ def process_whatsapp_message(body):
         interactive = message.get("interactive", {})
         if interactive.get("type") == "button_reply":
             button_reply_id = interactive["button_reply"].get("id")
-            # If Iternary is selected, show three more buttons
-            if button_reply_id == "iternary_btn":
-                # Show submenu with three PDF options
-                data = get_interactive_reply_button_input(
-                    wa_id,
-                    body_text="Select a Yatra/Pravaas:",
-                    button1_id="yuva_yatra_1_btn",
-                    button1_title="Yuva Yatra 1",
-                    button2_id="yuva_yatra_2_btn",
-                    button2_title="Yuva Yatra 2"
-                )
-                # Add a third button (Parivar Pravaas) manually to the payload
-                payload = json.loads(data)
-                payload["interactive"]["action"]["buttons"].append({
-                    "type": "reply",
-                    "reply": {"id": "parivar_pravaas_btn", "title": "Parivar Pravaas"}
-                })
-                send_message(json.dumps(payload))
-                return
-            elif button_reply_id == "yuva_yatra_1_btn":
+            if button_reply_id == "yuva_yatra_1_btn":
                 media_id = "1311569197013460"  # Replace with actual media ID
                 caption = "Yuva Yatra 1 PDF"
                 filename = "yuva_yatra_1.pdf"
@@ -155,6 +152,15 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
+                cta = get_cta_button_input(
+                    wa_id,
+                    body_text="Need help?",
+                    button1_id="contact_sales_btn",
+                    button1_title="Contact to Sales Person",
+                    button2_id="contact_queries_btn",
+                    button2_title="Contact for Queries"
+                )
+                send_message(cta)
                 return
             elif button_reply_id == "yuva_yatra_2_btn":
                 media_id = "683872947367766"  # Replace with actual media ID
@@ -167,6 +173,15 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
+                cta = get_cta_button_input(
+                    wa_id,
+                    body_text="Need help?",
+                    button1_id="contact_sales_btn",
+                    button1_title="Contact to Sales Person",
+                    button2_id="contact_queries_btn",
+                    button2_title="Contact for Queries"
+                )
+                send_message(cta)
                 return
             elif button_reply_id == "parivar_pravaas_btn":
                 media_id = "1813897679248489"  # Replace with actual media ID
@@ -179,26 +194,72 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
+                cta = get_cta_button_input(
+                    wa_id,
+                    body_text="Need help?",
+                    button1_id="contact_sales_btn",
+                    button1_title="Contact to Sales Person",
+                    button2_id="contact_queries_btn",
+                    button2_title="Contact for Queries"
+                )
+                send_message(cta)
                 return
             elif button_reply_id == "more_btn":
                 response = "You selected More. Please specify what you need."
                 data = get_text_message_input(wa_id, response)
                 send_message(data)
                 return
+            elif button_reply_id == "iternary_btn":
+                welcome = (
+                    "✨ Namaste from HostmenIndia! ✨\n"
+                    "Experience the grandeur of Dev Deepawali in Varanasi with handpicked itineraries designed for youth adventurers and families alike.\n\n"
+                    "Step 1 – Choose Your Experience\n"
+                    "👉 Please select your preferred tour category:\n"
+                    "1️⃣ Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻\n"
+                    "2️⃣ Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠\n"
+                    "3️⃣ Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦"
+                )
+                data = get_interactive_reply_button_input(
+                    wa_id,
+                    body_text=welcome,
+                    button1_id="yuva_yatra_1_btn",
+                    button1_title="Yuva Yatra 1",
+                    button2_id="yuva_yatra_2_btn",
+                    button2_title="Yuva Yatra 2"
+                )
+                payload = json.loads(data)
+                payload["interactive"]["action"]["buttons"].append({
+                    "type": "reply",
+                    "reply": {"id": "parivar_pravaas_btn", "title": "Parivar Pravaas"}
+                })
+                send_message(json.dumps(payload))
+                return
 
-    # If user sends any text, show interactive buttons
+    # If user sends any text, show welcome message and three buttons
     if message.get("type") == "text":
-        message_body = message["text"]["body"]
-        # Show buttons for any text message
+        welcome = (
+            "✨ Namaste from HostmenIndia! ✨\n"
+            "Experience the grandeur of Dev Deepawali in Varanasi with handpicked itineraries designed for youth adventurers and families alike.\n\n"
+            "Step 1 – Choose Your Experience\n"
+            "👉 Please select your preferred tour category:\n"
+            "1️⃣ Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻\n"
+            "2️⃣ Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠\n"
+            "3️⃣ Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦"
+        )
         data = get_interactive_reply_button_input(
             wa_id,
-            body_text="Choose an option:",
-            button1_id="iternary_btn",
-            button1_title="Iternary",
-            button2_id="more_btn",
-            button2_title="More"
+            body_text=welcome,
+            button1_id="yuva_yatra_1_btn",
+            button1_title="Yuva Yatra 1",
+            button2_id="yuva_yatra_2_btn",
+            button2_title="Yuva Yatra 2"
         )
-        send_message(data)
+        payload = json.loads(data)
+        payload["interactive"]["action"]["buttons"].append({
+            "type": "reply",
+            "reply": {"id": "parivar_pravaas_btn", "title": "Parivar Pravaas"}
+        })
+        send_message(json.dumps(payload))
         return
 
 
