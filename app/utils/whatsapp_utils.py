@@ -154,6 +154,7 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
+                time.sleep(2)
                 cta = get_cta_button_input(
                     wa_id,
                     body_text="Need help?",
@@ -175,6 +176,7 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
+                time.sleep(2)
                 cta = get_cta_button_input(
                     wa_id,
                     body_text="Need help?",
@@ -196,6 +198,7 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
+                time.sleep(2)
                 cta = get_cta_button_input(
                     wa_id,
                     body_text="Need help?",
@@ -205,6 +208,16 @@ def process_whatsapp_message(body):
                     button2_title="Contact for Queries"
                 )
                 send_message(cta)
+                return
+            elif button_reply_id == "contact_sales_btn":
+                number = "+91-9876543210"  # Replace with actual sales number
+                data = get_text_message_input(wa_id, f"Contact Sales Person: {number}")
+                send_message(data)
+                return
+            elif button_reply_id == "contact_queries_btn":
+                number = "+91-9123456780"  # Replace with actual queries number
+                data = get_text_message_input(wa_id, f"Contact for Queries: {number}")
+                send_message(data)
                 return
             elif button_reply_id == "more_btn":
                 response = "You selected More. Please specify what you need."
