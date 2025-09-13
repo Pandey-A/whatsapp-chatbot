@@ -125,10 +125,53 @@ def process_whatsapp_message(body):
         interactive = message.get("interactive", {})
         if interactive.get("type") == "button_reply":
             button_reply_id = interactive["button_reply"].get("id")
+            # If Iternary is selected, show three more buttons
             if button_reply_id == "iternary_btn":
-                media_id = "676557238187990"  # Your actual media ID
-                caption = "Here is your itinerary."
-                filename = "itinerary.pdf"
+                # Show submenu with three PDF options
+                data = get_interactive_reply_button_input(
+                    wa_id,
+                    body_text="Select a Yatra/Pravaas:",
+                    button1_id="yuva_yatra_1_btn",
+                    button1_title="Yuva Yatra 1",
+                    button2_id="yuva_yatra_2_btn",
+                    button2_title="Yuva Yatra 2"
+                )
+                # Add a third button (Parivar Pravaas) manually to the payload
+                payload = json.loads(data)
+                payload["interactive"]["action"]["buttons"].append({
+                    "type": "reply",
+                    "reply": {"id": "parivar_pravaas_btn", "title": "Parivar Pravaas"}
+                })
+                send_message(json.dumps(payload))
+                return
+            elif button_reply_id == "yuva_yatra_1_btn":
+                media_id = "1311569197013460"  # Replace with actual media ID
+                caption = "Yuva Yatra 1 PDF"
+                filename = "yuva_yatra_1.pdf"
+                data = get_document_message_input(
+                    wa_id,
+                    media_id=media_id,
+                    caption=caption,
+                    filename=filename
+                )
+                send_message(data)
+                return
+            elif button_reply_id == "yuva_yatra_2_btn":
+                media_id = "683872947367766"  # Replace with actual media ID
+                caption = "Yuva Yatra 2 PDF"
+                filename = "yuva_yatra_2.pdf"
+                data = get_document_message_input(
+                    wa_id,
+                    media_id=media_id,
+                    caption=caption,
+                    filename=filename
+                )
+                send_message(data)
+                return
+            elif button_reply_id == "parivar_pravaas_btn":
+                media_id = "1813897679248489"  # Replace with actual media ID
+                caption = "Parivar Pravaas PDF"
+                filename = "parivar_pravaas.pdf"
                 data = get_document_message_input(
                     wa_id,
                     media_id=media_id,
