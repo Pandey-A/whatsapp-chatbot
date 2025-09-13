@@ -1,3 +1,5 @@
+import time
+import threading
 def get_cta_button_input(recipient, body_text, button1_id, button1_title, button2_id, button2_title):
     return json.dumps({
         "messaging_product": "whatsapp",
@@ -152,15 +154,18 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
-                cta = get_cta_button_input(
-                    wa_id,
-                    body_text="Need help?",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
-                )
-                send_message(cta)
+                def send_cta():
+                    time.sleep(5)
+                    cta = get_cta_button_input(
+                        wa_id,
+                        body_text="Need help?",
+                        button1_id="contact_sales_btn",
+                        button1_title="Contact to Sales Person",
+                        button2_id="contact_queries_btn",
+                        button2_title="Contact for Queries"
+                    )
+                    send_message(cta)
+                threading.Thread(target=send_cta).start()
                 return
             elif button_reply_id == "yuva_yatra_2_btn":
                 media_id = "683872947367766"  # Replace with actual media ID
@@ -173,15 +178,18 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
-                cta = get_cta_button_input(
-                    wa_id,
-                    body_text="Need help?",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
-                )
-                send_message(cta)
+                def send_cta():
+                    time.sleep(5)
+                    cta = get_cta_button_input(
+                        wa_id,
+                        body_text="Need help?",
+                        button1_id="contact_sales_btn",
+                        button1_title="Contact to Sales Person",
+                        button2_id="contact_queries_btn",
+                        button2_title="Contact for Queries"
+                    )
+                    send_message(cta)
+                threading.Thread(target=send_cta).start()
                 return
             elif button_reply_id == "parivar_pravaas_btn":
                 media_id = "1813897679248489"  # Replace with actual media ID
@@ -194,15 +202,18 @@ def process_whatsapp_message(body):
                     filename=filename
                 )
                 send_message(data)
-                cta = get_cta_button_input(
-                    wa_id,
-                    body_text="Need help?",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
-                )
-                send_message(cta)
+                def send_cta():
+                    time.sleep(5)
+                    cta = get_cta_button_input(
+                        wa_id,
+                        body_text="Need help?",
+                        button1_id="contact_sales_btn",
+                        button1_title="Contact to Sales Person",
+                        button2_id="contact_queries_btn",
+                        button2_title="Contact for Queries"
+                    )
+                    send_message(cta)
+                threading.Thread(target=send_cta).start()
                 return
             elif button_reply_id == "more_btn":
                 response = "You selected More. Please specify what you need."
