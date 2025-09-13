@@ -131,6 +131,28 @@ def process_text_for_whatsapp(text):
 
 
 def process_whatsapp_message(body):
+    # If user sends 'Yes' or 'No' as a text reply
+    if message.get("type") == "text":
+        user_text = message.get("text", {}).get("body", "").strip().lower()
+        if user_text == "yes":
+            # Send the same 'Need help?' message with two buttons as after 'hi'
+            need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
+            send_message(need_help)
+            time.sleep(1.5)
+            reply_buttons = get_interactive_reply_button_input(
+                wa_id,
+                body_text="Choose an option:",
+                button1_id="contact_sales_btn",
+                button1_title="Contact to Sales Person",
+                button2_id="contact_queries_btn",
+                button2_title="Contact for Queries"
+            )
+            send_message(reply_buttons)
+            return
+        elif user_text == "no":
+            thank_you = get_text_message_input(wa_id, "Thank you for contacting us. Regards, HostmenIndia")
+            send_message(thank_you)
+            return
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
 
