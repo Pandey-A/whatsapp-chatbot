@@ -157,17 +157,19 @@ def process_whatsapp_message(body):
                 # Immediately send a plain text message
                 need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
                 send_message(need_help)
-                # Wait a moment, then send CTA buttons for reliability
-                time.sleep(1.5)
-                cta = get_cta_button_input(
-                    wa_id,
-                    body_text="Contact options:",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
-                )
-                send_message(cta)
+                # Send CTA buttons in a new thread after a short delay
+                def send_cta_buttons():
+                    time.sleep(1.5)
+                    cta = get_cta_button_input(
+                        wa_id,
+                        body_text="Contact options:",
+                        button1_id="contact_sales_btn",
+                        button1_title="Contact to Sales Person",
+                        button2_id="contact_queries_btn",
+                        button2_title="Contact for Queries"
+                    )
+                    send_message(cta)
+                threading.Thread(target=send_cta_buttons).start()
                 return
             elif button_reply_id == "yuva_yatra_2_btn":
                 media_id = "683872947367766"  # Replace with actual media ID
@@ -182,16 +184,18 @@ def process_whatsapp_message(body):
                 send_message(data)
                 need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
                 send_message(need_help)
-                time.sleep(1.5)
-                cta = get_cta_button_input(
-                    wa_id,
-                    body_text="Contact options:",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
-                )
-                send_message(cta)
+                def send_cta_buttons():
+                    time.sleep(1.5)
+                    cta = get_cta_button_input(
+                        wa_id,
+                        body_text="Contact options:",
+                        button1_id="contact_sales_btn",
+                        button1_title="Contact to Sales Person",
+                        button2_id="contact_queries_btn",
+                        button2_title="Contact for Queries"
+                    )
+                    send_message(cta)
+                threading.Thread(target=send_cta_buttons).start()
                 return
             elif button_reply_id == "parivar_pravaas_btn":
                 media_id = "1813897679248489"  # Replace with actual media ID
@@ -206,16 +210,18 @@ def process_whatsapp_message(body):
                 send_message(data)
                 need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
                 send_message(need_help)
-                time.sleep(1.5)
-                cta = get_cta_button_input(
-                    wa_id,
-                    body_text="Contact options:",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
-                )
-                send_message(cta)
+                def send_cta_buttons():
+                    time.sleep(1.5)
+                    cta = get_cta_button_input(
+                        wa_id,
+                        body_text="Contact options:",
+                        button1_id="contact_sales_btn",
+                        button1_title="Contact to Sales Person",
+                        button2_id="contact_queries_btn",
+                        button2_title="Contact for Queries"
+                    )
+                    send_message(cta)
+                threading.Thread(target=send_cta_buttons).start()
                 return
             elif button_reply_id == "contact_sales_btn":
                 number = "+91-9876543210"  # Replace with actual sales number
