@@ -158,18 +158,17 @@ def process_whatsapp_message(body):
                 need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
                 send_message(need_help)
                 # Send CTA buttons in a new thread after a short delay
-                def send_cta_buttons():
-                    time.sleep(1.5)
-                    cta = get_cta_button_input(
-                        wa_id,
-                        body_text="Contact options:",
-                        button1_id="contact_sales_btn",
-                        button1_title="Contact to Sales Person",
-                        button2_id="contact_queries_btn",
-                        button2_title="Contact for Queries"
-                    )
-                    send_message(cta)
-                threading.Thread(target=send_cta_buttons).start()
+                # Wait a moment to ensure message order, then send reply buttons synchronously
+                time.sleep(1.5)
+                reply_buttons = get_interactive_reply_button_input(
+                    wa_id,
+                    body_text="Choose an option:",
+                    button1_id="contact_sales_btn",
+                    button1_title="Contact to Sales Person",
+                    button2_id="contact_queries_btn",
+                    button2_title="Contact for Queries"
+                )
+                send_message(reply_buttons)
                 return
             elif button_reply_id == "yuva_yatra_2_btn":
                 media_id = "683872947367766"  # Replace with actual media ID
@@ -184,18 +183,16 @@ def process_whatsapp_message(body):
                 send_message(data)
                 need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
                 send_message(need_help)
-                def send_cta_buttons():
-                    time.sleep(1.5)
-                    cta = get_cta_button_input(
-                        wa_id,
-                        body_text="Contact options:",
-                        button1_id="contact_sales_btn",
-                        button1_title="Contact to Sales Person",
-                        button2_id="contact_queries_btn",
-                        button2_title="Contact for Queries"
-                    )
-                    send_message(cta)
-                threading.Thread(target=send_cta_buttons).start()
+                time.sleep(1.5)
+                reply_buttons = get_interactive_reply_button_input(
+                    wa_id,
+                    body_text="Choose an option:",
+                    button1_id="contact_sales_btn",
+                    button1_title="Contact to Sales Person",
+                    button2_id="contact_queries_btn",
+                    button2_title="Contact for Queries"
+                )
+                send_message(reply_buttons)
                 return
             elif button_reply_id == "parivar_pravaas_btn":
                 media_id = "1813897679248489"  # Replace with actual media ID
@@ -210,18 +207,16 @@ def process_whatsapp_message(body):
                 send_message(data)
                 need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
                 send_message(need_help)
-                def send_cta_buttons():
-                    time.sleep(1.5)
-                    cta = get_cta_button_input(
-                        wa_id,
-                        body_text="Contact options:",
-                        button1_id="contact_sales_btn",
-                        button1_title="Contact to Sales Person",
-                        button2_id="contact_queries_btn",
-                        button2_title="Contact for Queries"
-                    )
-                    send_message(cta)
-                threading.Thread(target=send_cta_buttons).start()
+                time.sleep(1.5)
+                reply_buttons = get_interactive_reply_button_input(
+                    wa_id,
+                    body_text="Choose an option:",
+                    button1_id="contact_sales_btn",
+                    button1_title="Contact to Sales Person",
+                    button2_id="contact_queries_btn",
+                    button2_title="Contact for Queries"
+                )
+                send_message(reply_buttons)
                 return
             elif button_reply_id == "contact_sales_btn":
                 number = "+91-9876543210"  # Replace with actual sales number
