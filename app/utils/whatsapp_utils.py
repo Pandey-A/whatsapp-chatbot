@@ -90,10 +90,123 @@ def process_text_for_whatsapp(text):
     return whatsapp_style_text
 
 
-def send_tour_options(wa_id):
-    """Send interactive buttons with tour options"""
-    # Create the button payload with 3 buttons
-    button_payload = {
+def process_whatsapp_message(body):
+    wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
+    name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
+    message = body["entry"][0]["changes"][0]["value"]["messages"][0]
+
+    # Always send the welcome message first
+    welcome_text = (
+        f"Namaste {name}! 🙏\n\n"
+        "Welcome to HostmenIndia! ✨\n\n"
+        "Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city.\n\n"
+        "Choose from our curated tours and get your complete itinerary instantly:"
+    )
+    welcome_msg = get_text_message_input(wa_id, welcome_text)
+    send_message(welcome_msg)
+
+    # Handle interactive button replies
+    if message.get("type") == "interactive":
+        interactive = message.get("interactive", {})
+        if interactive.get("type") == "button_reply":
+            button_reply_id = interactive["button_reply"].get("id")
+            
+            if button_reply_id == "yuva_yatra_1_btn":
+                # Send Yuva Yatra 1 PDF
+                data = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "recipient_type": "individual",
+                    "to": wa_id,
+                    "type": "document",
+                    "document": {
+                        "id": "1311569197013460",
+                        "caption": "Yuva Yatra 1 PDF",
+                        "filename": "yuva_yatra_1.pdf"
+                    }
+                })
+                send_message(data)
+                
+                # Send contact message
+                contact_msg = (
+                    "📞 *Contact Us:*\n\n"
+                    "For Any Queries: *8800969741*\n"
+                    "To Confirm and Make Payment: *7054400500*\n\n"
+                    "Our team is ready to assist you! 😊"
+                )
+                send_message(get_text_message_input(wa_id, contact_msg))
+                return
+                
+            elif button_reply_id == "yuva_yatra_2_btn":
+                # Send Yuva Yatra 2 PDF
+                data = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "recipient_type": "individual",
+                    "to": wa_id,
+                    "type": "document",
+                    "document": {
+                        "id": "683872947367766",
+                        "caption": "Yuva Yatra 2 PDF",
+                        "filename": "yuva_yatra_2.pdf"
+                    }
+                })
+                send_message(data)
+                
+                # Send contact message
+                contact_msg = (
+                    "📞 *Contact Us:*\n\n"
+                    "For Any Queries: *8800969741*\n"
+                    "To Confirm and Make Payment: *7054400500*\n\n"
+                    "Our team is ready to assist you! 😊"
+                )
+                send_message(get_text_message_input(wa_id, contact_msg))
+                return
+                
+            elif button_reply_id == "parivar_pravaas_btn":
+                # Send Parivaar Pravas PDF
+                data = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "recipient_type": "individual",
+                    "to": wa_id,
+                    "type": "document",
+                    "document": {
+                        "id": "1813897679248489",
+                        "caption": "Parivaar Pravas PDF",
+                        "filename": "parivar_pravaas.pdf"
+                    }
+                })
+                send_message(data)
+                
+                # Send contact message
+                contact_msg = (
+                    "📞 *Contact Us:*\n\n"
+                    "For Any Queries: *8800969741*\n"
+                    "To Confirm and Make Payment: *7054400500*\n\n"
+                    "Our team is ready to assist you! 😊"
+                )
+                send_message(get_text_message_input(wa_id, contact_msg))
+                return
+                
+            elif button_reply_id == "customized_tour_btn":
+                # Send custom message for Customized Tour
+                custom_msg = (
+                    "🌟 *Customized Tour - From Your City* 🌟\n\n"
+                    "Thank you for choosing our customized tour option!\n\n"
+                    "✨ *What we offer:*\n"
+                    "• Departure from your city\n"
+                    "• Tailor-made inclusions based on your preferences\n"
+                    "• Flexible itinerary\n"
+                    "• Personalized experience\n\n"
+                    "Our team will help you create the perfect Dev Deepawali experience in Varanasi according to your needs and budget.\n\n"
+                    "📞 *Contact Us:*\n"
+                    "For Any Queries: *8800969741*\n"
+                    "To Confirm and Make Payment: *7054400500*"
+                )
+                send_message(get_text_message_input(wa_id, custom_msg))
+                return
+
+    # Send interactive buttons with all 4 options
+    # First message with 3 buttons (Options 1, 2, 3)
+    button_msg_1 = json.dumps({
         "messaging_product": "whatsapp",
         "to": wa_id,
         "type": "interactive",
@@ -112,7 +225,7 @@ def send_tour_options(wa_id):
                     {
                         "type": "reply",
                         "reply": {
-                            "id": "yuva_yatra_2_btn", 
+                            "id": "yuva_yatra_2_btn",
                             "title": "2️⃣ Yuva Yatra 2"
                         }
                     },
@@ -126,166 +239,31 @@ def send_tour_options(wa_id):
                 ]
             }
         }
-    }
-    send_message(json.dumps(button_payload))
-
-
-def send_cta_message(wa_id):
-    """Send CTA message with call buttons"""
-    cta_msg = json.dumps({
+    })
+    send_message(button_msg_1)
+    
+    # Second message with 1 button (Option 4)
+    button_msg_2 = json.dumps({
         "messaging_product": "whatsapp",
         "to": wa_id,
         "type": "interactive",
         "interactive": {
-            "type": "cta_url",
-            "body": {"text": "For Any Queries- Call at 8800969741, To Confirm and Make the payment- Call at 7054400500"},
+            "type": "button",
+            "body": {"text": "Or choose a customized option:"},
             "action": {
-                "name": "cta_url",
-                "parameters": [
-                    {"display_text": "Call for Queries", "url": "tel:8800969741"},
-                    {"display_text": "Call for Payment", "url": "tel:7054400500"}
+                "buttons": [
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "customized_tour_btn",
+                            "title": "4️⃣ Customized Tour"
+                        }
+                    }
                 ]
             }
         }
     })
-    send_message(cta_msg)
-
-
-def process_whatsapp_message(body):
-    wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
-    name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
-    message = body["entry"][0]["changes"][0]["value"]["messages"][0]
-    message_type = message.get("type")
-
-    # Handle interactive button replies
-    if message_type == "interactive":
-        interactive = message.get("interactive", {})
-        if interactive.get("type") == "button_reply":
-            button_reply_id = interactive["button_reply"].get("id")
-            
-            if button_reply_id == "yuva_yatra_1_btn":
-                # Send Yuva Yatra 1 PDF
-                data = json.dumps({
-                    "messaging_product": "whatsapp",
-                    "recipient_type": "individual",
-                    "to": wa_id,
-                    "type": "document",
-                    "document": {
-                        "id": "1311569197013460",
-                        "caption": "Yuva Yatra 1 PDF - Separate dorms & unattached washrooms for men and women 🛏️🚻",
-                        "filename": "yuva_yatra_1.pdf"
-                    }
-                })
-                send_message(data)
-                send_cta_message(wa_id)
-                return
-                
-            elif button_reply_id == "yuva_yatra_2_btn":
-                # Send Yuva Yatra 2 PDF
-                data = json.dumps({
-                    "messaging_product": "whatsapp",
-                    "recipient_type": "individual",
-                    "to": wa_id,
-                    "type": "document",
-                    "document": {
-                        "id": "683872947367766",
-                        "caption": "Yuva Yatra 2 PDF - Mixed & female dorms with attached washrooms 🏠",
-                        "filename": "yuva_yatra_2.pdf"
-                    }
-                })
-                send_message(data)
-                send_cta_message(wa_id)
-                return
-                
-            elif button_reply_id == "parivar_pravaas_btn":
-                # Send Parivaar Pravas PDF
-                data = json.dumps({
-                    "messaging_product": "whatsapp",
-                    "recipient_type": "individual",
-                    "to": wa_id,
-                    "type": "document",
-                    "document": {
-                        "id": "1813897679248489",
-                        "caption": "Parivaar Pravas PDF - Comfortable family stay options 👨‍👩‍👧‍👦",
-                        "filename": "parivar_pravaas.pdf"
-                    }
-                })
-                send_message(data)
-                send_cta_message(wa_id)
-                return
-                
-            elif button_reply_id == "customized_tour_btn":
-                # Send custom message for Customized Tour
-                custom_msg = (
-                    "🌟 *Customized Tour - From Your City* 🌟\n\n"
-                    "Thank you for choosing our customized tour option!\n\n"
-                    "✨ *What we offer:*\n"
-                    "• Departure from your city\n"
-                    "• Tailor-made inclusions based on your preferences\n"
-                    "• Flexible itinerary\n"
-                    "• Personalized experience\n\n"
-                    "Our team will help you create the perfect Dev Deepawali experience in Varanasi according to your needs and budget.\n\n"
-                    "Please contact us to discuss your requirements:"
-                )
-                send_message(get_text_message_input(wa_id, custom_msg))
-                send_cta_message(wa_id)
-                return
-                
-            elif button_reply_id == "call_queries_btn":
-                # Send message with query number
-                query_msg = (
-                    "📞 *For Queries:*\n\n"
-                    "Call us at: *8800969741*\n\n"
-                    "Our team is ready to help you with:\n"
-                    "• Tour details and inclusions\n"
-                    "• Customization options\n"
-                    "• Dates and availability\n"
-                    "• Any other questions\n\n"
-                    "We look forward to assisting you! 😊"
-                )
-                send_message(get_text_message_input(wa_id, query_msg))
-                return
-                
-            elif button_reply_id == "call_payment_btn":
-                # Send message with payment number
-                payment_msg = (
-                    "💳 *For Payment & Confirmation:*\n\n"
-                    "Call us at: *7054400500*\n\n"
-                    "Our payment team will help you with:\n"
-                    "• Tour confirmation\n"
-                    "• Payment options\n"
-                    "• Booking procedures\n"
-                    "• Payment verification\n\n"
-                    "Secure your spot today! 🎯"
-                )
-                send_message(get_text_message_input(wa_id, payment_msg))
-                return
-
-    # Handle text messages (including "Hi", "Hello", etc.)
-    elif message_type == "text":
-        # Always send the welcome message first
-        welcome_text = (
-            f"Namaste {name}! 🙏\n\n"
-            "Welcome to HostmenIndia! ✨\n\n"
-            "Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city.\n\n"
-            "Choose from our curated tours and get your complete itinerary instantly:"
-        )
-        welcome_msg = get_text_message_input(wa_id, welcome_text)
-        send_message(welcome_msg)
-        
-        # Send tour options immediately after welcome message
-        send_tour_options(wa_id)
-        return
-
-    # Handle other message types (audio, image, etc.)
-    else:
-        fallback_msg = (
-            f"Hello {name}! 👋\n\n"
-            "I can help you with information about our Dev Deepawali tours in Varanasi.\n\n"
-            "Please choose from the options below:"
-        )
-        send_message(get_text_message_input(wa_id, fallback_msg))
-        send_tour_options(wa_id)
+    send_message(button_msg_2)
 
 
 def is_valid_whatsapp_message(body):
