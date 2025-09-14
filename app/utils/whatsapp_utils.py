@@ -174,7 +174,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "1311569197013460",
-                        "caption": "Yuva Yatra 1 PDF",
+                        "caption": "Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻",
                         "filename": "yuva_yatra_1.pdf"
                     }
                 })
@@ -198,7 +198,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "683872947367766",
-                        "caption": "Yuva Yatra 2 PDF",
+                        "caption": "Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠",
                         "filename": "yuva_yatra_2.pdf"
                     }
                 })
@@ -222,7 +222,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "1813897679248489",
-                        "caption": "Parivaar Pravas PDF",
+                        "caption": "Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦",
                         "filename": "parivar_pravaas.pdf"
                     }
                 })
