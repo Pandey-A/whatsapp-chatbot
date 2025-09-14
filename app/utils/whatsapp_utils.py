@@ -153,6 +153,20 @@ def send_tour_options(wa_id):
     send_message(button_msg_2)
 
 
+def is_greeting_message(message_text):
+    """Check if the message is a greeting that should trigger welcome flow"""
+    greeting_keywords = [
+        'hi', 'hello', 'hey', 'start', 'begin', 'namaste', 'namaskar',
+        'good morning', 'good afternoon', 'good evening', 'greetings'
+    ]
+    
+    # Convert to lowercase and check if it matches any greeting
+    message_lower = message_text.lower().strip()
+    
+    # Check for exact matches or if message contains greeting words
+    return any(keyword in message_lower for keyword in greeting_keywords)
+
+
 def process_whatsapp_message(body):
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
@@ -257,31 +271,44 @@ def process_whatsapp_message(body):
         # IMPORTANT: Return here to prevent any further processing
         return
 
-    # Handle text messages (like "Hi", "Hello") - ONLY send welcome + buttons for text
+    # Handle text messages - ONLY send welcome + buttons for GREETING messages
     elif message_type == "text":
-        # Send image with caption first (replace <IMAGE_MEDIA_ID> with your actual media id)
-        image_payload = json.dumps({
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": wa_id,
-            "type": "image",
-            "image": {
-                "id": "792434643189920",
-                "caption": f"Namaste {name}! 🙏\n\n Greetings from HostmenIndia! ✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city. Choose from our curated tours and get your complete itinerary instantly."
-            }
-        })
-        send_message(image_payload)
-
-        # Send welcome message ONLY for text messages
-        welcome_text = (
-            
-            
-        )
-        welcome_msg = get_text_message_input(wa_id, welcome_text)
-        send_message(welcome_msg)
+        message_text = message.get("text", {}).get("body", "").strip()
         
-        # Send tour options
-        send_tour_options(wa_id)
+        # Check if this is a greeting message
+        if is_greeting_message(message_text):
+            # Send image with caption first (replace <IMAGE_MEDIA_ID> with your actual media id)
+            image_payload = json.dumps({
+                "messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                "to": wa_id,
+                "type": "image",
+                "image": {
+                    "id": "792434643189920",
+                    "caption": f"Namaste {name}! 🙏\n\n Greetings from HostmenIndia! ✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city. Choose from our curated tours and get your complete itinerary instantly."
+                }
+            })
+            send_message(image_payload)
+
+            # Send welcome message ONLY for greeting messages
+            welcome_text = (
+                # Add your welcome text here if needed
+                ""
+            )
+            if welcome_text.strip():  # Only send if there's actual content
+                welcome_msg = get_text_message_input(wa_id, welcome_text)
+                send_message(welcome_msg)
+            
+            # Send tour options
+            send_tour_options(wa_id)
+        else:
+            # For non-greeting text messages, send a different response
+            help_msg = (
+                f"Hello {name}! 👋\n\n"
+                "I can help you with Dev Deepawali tour information. "
+                "If you'd like to see our tour options again, please type 'Hi' or 'Hello'."
+            )
+            send_message(get_text_message_input(wa_id, help_msg))
         
         # IMPORTANT: Return here to prevent any further processing
         return
