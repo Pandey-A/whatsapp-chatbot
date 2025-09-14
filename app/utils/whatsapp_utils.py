@@ -106,14 +106,14 @@ def send_tour_options(wa_id):
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_1_btn",
-                            "title": "🏕️ Yuva Yatra 1 "
+                            "title": "Separate M & F Dorms with unattached washrooms "
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_2_btn",
-                            "title": "🏕️ Yuva Yatra 2 "
+                            "title": "Mixed/female dorms, washrooms included "
                         }
                     },
                     {
