@@ -106,21 +106,21 @@ def send_tour_options(wa_id):
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_1_btn",
-                            "title": "Separate M & F Dorms with unattached washrooms "
+                            "title": "1️⃣ Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻 "
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_2_btn",
-                            "title": "Mixed/female dorms, washrooms included "
+                            "title": "2️⃣ Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "parivar_pravaas_btn",
-                            "title": "Parivaar Pravaas"
+                            "title": "3️⃣ Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦 "
                         }
                     }
                 ]
