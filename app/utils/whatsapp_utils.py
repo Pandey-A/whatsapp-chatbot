@@ -209,18 +209,37 @@ def process_whatsapp_message(body):
                 logging.info(f"PDF send response: {pdf_response}")
                 
                 # Wait for PDF to be sent successfully
-                time.sleep(2)
+                time.sleep(3)
                 
-                # Send help text with CTA buttons combined
-                reply_buttons = get_interactive_reply_button_input(
-                    wa_id,
-                    body_text="Need help? If you want to talk to someone, use the buttons below:",
-                    button1_id="contact_queries_btn",
-                    button1_title="Contact for Queries",
-                    button2_id="contact_payment_btn",
-                    button2_title="Confirm & Make Payment"
-                )
-                cta_response = send_message(reply_buttons)
+                # Send CTA buttons with proper interactive format
+                cta_data = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "to": wa_id,
+                    "type": "interactive",
+                    "interactive": {
+                        "type": "button",
+                        "body": {"text": "Need help? If you want to talk to someone, use the buttons below."},
+                        "action": {
+                            "buttons": [
+                                {
+                                    "type": "reply",
+                                    "reply": {
+                                        "id": "contact_queries_btn",
+                                        "title": "Contact for Queries"
+                                    }
+                                },
+                                {
+                                    "type": "reply",
+                                    "reply": {
+                                        "id": "contact_payment_btn",
+                                        "title": "Confirm & Make Payment"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                })
+                cta_response = send_message(cta_data)
                 logging.info(f"CTA buttons send response: {cta_response}")
                 return
             elif button_reply_id == "contact_sales_btn":
