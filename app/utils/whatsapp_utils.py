@@ -90,23 +90,77 @@ def process_text_for_whatsapp(text):
     return whatsapp_style_text
 
 
+def send_tour_options(wa_id):
+    """Send the tour option buttons"""
+    # First message with 3 buttons (Options 1, 2, 3)
+    button_msg_1 = json.dumps({
+        "messaging_product": "whatsapp",
+        "to": wa_id,
+        "type": "interactive",
+        "interactive": {
+            "type": "button",
+            "body": {"text": "Choose your experience:"},
+            "action": {
+                "buttons": [
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "yuva_yatra_1_btn",
+                            "title": "1️⃣ Yuva Yatra 1"
+                        }
+                    },
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "yuva_yatra_2_btn",
+                            "title": "2️⃣ Yuva Yatra 2"
+                        }
+                    },
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "parivar_pravaas_btn",
+                            "title": "3️⃣ Parivaar Pravas"
+                        }
+                    }
+                ]
+            }
+        }
+    })
+    send_message(button_msg_1)
+    
+    # Second message with 1 button (Option 4)
+    button_msg_2 = json.dumps({
+        "messaging_product": "whatsapp",
+        "to": wa_id,
+        "type": "interactive",
+        "interactive": {
+            "type": "button",
+            "body": {"text": "Or choose a customized option:"},
+            "action": {
+                "buttons": [
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "customized_tour_btn",
+                            "title": "4️⃣ Customized Tour"
+                        }
+                    }
+                ]
+            }
+        }
+    })
+    send_message(button_msg_2)
+
+
 def process_whatsapp_message(body):
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
     message = body["entry"][0]["changes"][0]["value"]["messages"][0]
+    message_type = message.get("type")
 
-    # Always send the welcome message first
-    welcome_text = (
-        f"Namaste {name}! 🙏\n\n"
-        "Welcome to HostmenIndia! ✨\n\n"
-        "Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city.\n\n"
-        "Choose from our curated tours and get your complete itinerary instantly:"
-    )
-    welcome_msg = get_text_message_input(wa_id, welcome_text)
-    send_message(welcome_msg)
-
-    # Handle interactive button replies
-    if message.get("type") == "interactive":
+    # Handle interactive button replies FIRST
+    if message_type == "interactive":
         interactive = message.get("interactive", {})
         if interactive.get("type") == "button_reply":
             button_reply_id = interactive["button_reply"].get("id")
@@ -134,7 +188,6 @@ def process_whatsapp_message(body):
                     "Our team is ready to assist you! 😊"
                 )
                 send_message(get_text_message_input(wa_id, contact_msg))
-                return
                 
             elif button_reply_id == "yuva_yatra_2_btn":
                 # Send Yuva Yatra 2 PDF
@@ -159,7 +212,6 @@ def process_whatsapp_message(body):
                     "Our team is ready to assist you! 😊"
                 )
                 send_message(get_text_message_input(wa_id, contact_msg))
-                return
                 
             elif button_reply_id == "parivar_pravaas_btn":
                 # Send Parivaar Pravas PDF
@@ -184,7 +236,6 @@ def process_whatsapp_message(body):
                     "Our team is ready to assist you! 😊"
                 )
                 send_message(get_text_message_input(wa_id, contact_msg))
-                return
                 
             elif button_reply_id == "customized_tour_btn":
                 # Send custom message for Customized Tour
@@ -202,11 +253,13 @@ def process_whatsapp_message(body):
                     "To Confirm and Make Payment: *7054400500*"
                 )
                 send_message(get_text_message_input(wa_id, custom_msg))
-                return
+        
+        # IMPORTANT: Return here to prevent any further processing
+        return
 
-    # Handle text messages (including "Hi", "Hello", etc.) - ONLY for initial chat
-    elif message.get("type") == "text":
-        # Send the welcome message only for text messages
+    # Handle text messages (like "Hi", "Hello") - ONLY send welcome + buttons for text
+    elif message_type == "text":
+        # Send welcome message ONLY for text messages
         welcome_text = (
             f"Namaste {name}! 🙏\n\n"
             "Welcome to HostmenIndia! ✨\n\n"
@@ -216,79 +269,22 @@ def process_whatsapp_message(body):
         welcome_msg = get_text_message_input(wa_id, welcome_text)
         send_message(welcome_msg)
         
-        # Then send the tour options
-        # Send interactive buttons with all 4 options
-        # First message with 3 buttons (Options 1, 2, 3)
-        button_msg_1 = json.dumps({
-            "messaging_product": "whatsapp",
-            "to": wa_id,
-            "type": "interactive",
-            "interactive": {
-                "type": "button",
-                "body": {"text": "Choose your experience:"},
-                "action": {
-                    "buttons": [
-                        {
-                            "type": "reply",
-                            "reply": {
-                                "id": "yuva_yatra_1_btn",
-                                "title": "1️⃣ Yuva Yatra 1"
-                            }
-                        },
-                        {
-                            "type": "reply",
-                            "reply": {
-                                "id": "yuva_yatra_2_btn",
-                                "title": "2️⃣ Yuva Yatra 2"
-                            }
-                        },
-                        {
-                            "type": "reply",
-                            "reply": {
-                                "id": "parivar_pravaas_btn",
-                                "title": "3️⃣ Parivaar Pravas"
-                            }
-                        }
-                    ]
-                }
-            }
-        })
-        send_message(button_msg_1)
+        # Send tour options
+        send_tour_options(wa_id)
         
-        # Second message with 1 button (Option 4)
-        button_msg_2 = json.dumps({
-            "messaging_product": "whatsapp",
-            "to": wa_id,
-            "type": "interactive",
-            "interactive": {
-                "type": "button",
-                "body": {"text": "Or choose a customized option:"},
-                "action": {
-                    "buttons": [
-                        {
-                            "type": "reply",
-                            "reply": {
-                                "id": "customized_tour_btn",
-                                "title": "4️⃣ Customized Tour"
-                            }
-                        }
-                    ]
-                }
-            }
-        })
-        send_message(button_msg_2)
+        # IMPORTANT: Return here to prevent any further processing
         return
 
-    # Handle other message types (audio, image, etc.)
+    # Handle other message types (audio, image, etc.) - Just send a simple response
     else:
-        fallback_msg = (
+        simple_msg = (
             f"Hello {name}! 👋\n\n"
-            "I can help you with information about our Dev Deepawali tours in Varanasi.\n\n"
-            "Please choose from the options below:"
+            "Please send a text message to get started with our Dev Deepawali tours."
         )
-        send_message(get_text_message_input(wa_id, fallback_msg))
+        send_message(get_text_message_input(wa_id, simple_msg))
         
-        # Send tour options for other message types too
+        # IMPORTANT: Return here to prevent any further processing  
+        return
 
 
 def is_valid_whatsapp_message(body):
