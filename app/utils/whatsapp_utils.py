@@ -113,7 +113,7 @@ def send_tour_options(wa_id):
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_2_btn",
-                            "title": "2️⃣ Yuva Yatra 1  "
+                            "title": "2️⃣ Yuva Yatra 2 "
                         }
                     },
                     {
@@ -196,10 +196,9 @@ def process_whatsapp_message(body):
                 
                 # Send contact message
                 contact_msg = (
-                    "📞 *Contact Us:*\n\n"
-                    "For Any Queries: *8800969741*\n"
-                    "To Confirm and Make Payment: *7054400500*\n\n"
-                    "Our team is ready to assist you! 😊"
+                     "🌍 Need guidance? 8800969741 \n\n"
+                    "🎟️ Lock your seat? 7054400500\n\n"
+                    "Travel dreams, one call away!"
                 )
                 send_message(get_text_message_input(wa_id, contact_msg))
                 
