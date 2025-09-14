@@ -106,21 +106,21 @@ def send_tour_options(wa_id):
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_1_btn",
-                            "title": "🏕️ Yuva Yatra 1 – Stay carefree with separate men’s and women’s dorms plus private unattached washrooms for complete comfort, hygiene, and peace of mind."
+                            "title": "🏕️ Yuva Yatra 1 "
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_2_btn",
-                            "title": "🏕️ Yuva Yatra 2 – Stay easy in mixed 👫 and female 👩 dorms, designed with attached washrooms 🚿 for convenience, comfort, and a relaxed journey ✨🛏️."
+                            "title": "🏕️ Yuva Yatra 2 "
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "parivar_pravaas_btn",
-                            "title": "Parivaar Pravaas – Stay at ease with family stays that blend comfort, privacy, and a homely touch for your perfect getaway. 🌿🏡✨"
+                            "title": "Parivaar Pravaas"
                         }
                     }
                 ]
@@ -188,7 +188,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "1311569197013460",
-                        "caption": "",
+                        "caption": "🏕️ Yuva Yatra 1 – Stay carefree with separate men’s and women’s dorms plus private unattached washrooms for complete comfort, hygiene, and peace of mind.",
                         "filename": "yuva_yatra_1.pdf"
                     }
                 })
@@ -212,7 +212,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "683872947367766",
-                        "caption": "",
+                        "caption": "🏕️ Yuva Yatra 2 – Stay easy in mixed 👫 and female 👩 dorms, designed with attached washrooms 🚿 for convenience, comfort, and a relaxed journey ✨🛏️.",
                         "filename": "yuva_yatra_2.pdf"
                     }
                 })
@@ -236,7 +236,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "1813897679248489",
-                        "caption": "",
+                        "caption": "Parivaar Pravaas – Stay at ease with family stays that blend comfort, privacy, and a homely touch for your perfect getaway. 🌿🏡✨",
                         "filename": "parivar_pravaas.pdf"
                     }
                 })
