@@ -217,12 +217,48 @@ def process_whatsapp_message(body):
             elif button_reply_id == "customized_tour_btn":
                 # Send custom message for Customized Tour
                 custom_msg = (
-                    "Thank you for your interest in a customized tour! 🌟\n\n"
-                    "Our team will help you create a personalized Dev Deepawali experience in Varanasi.\n\n"
-                    "Please call us to discuss your requirements:"
+                    "🌟 *Customized Tour - From Your City* 🌟\n\n"
+                    "Thank you for choosing our customized tour option!\n\n"
+                    "✨ *What we offer:*\n"
+                    "• Departure from your city\n"
+                    "• Tailor-made inclusions based on your preferences\n"
+                    "• Flexible itinerary\n"
+                    "• Personalized experience\n\n"
+                    "Our team will help you create the perfect Dev Deepawali experience in Varanasi according to your needs and budget.\n\n"
+                    "Please contact us to discuss your requirements:"
                 )
                 send_message(get_text_message_input(wa_id, custom_msg))
                 send_cta_message(wa_id)
+                return
+                
+            elif button_reply_id == "call_queries_btn":
+                # Send message with query number
+                query_msg = (
+                    "📞 *For Queries:*\n\n"
+                    "Call us at: *8800969741*\n\n"
+                    "Our team is ready to help you with:\n"
+                    "• Tour details and inclusions\n"
+                    "• Customization options\n"
+                    "• Dates and availability\n"
+                    "• Any other questions\n\n"
+                    "We look forward to assisting you! 😊"
+                )
+                send_message(get_text_message_input(wa_id, query_msg))
+                return
+                
+            elif button_reply_id == "call_payment_btn":
+                # Send message with payment number
+                payment_msg = (
+                    "💳 *For Payment & Confirmation:*\n\n"
+                    "Call us at: *7054400500*\n\n"
+                    "Our payment team will help you with:\n"
+                    "• Tour confirmation\n"
+                    "• Payment options\n"
+                    "• Booking procedures\n"
+                    "• Payment verification\n\n"
+                    "Secure your spot today! 🎯"
+                )
+                send_message(get_text_message_input(wa_id, payment_msg))
                 return
 
     # Handle text messages (including "Hi", "Hello", etc.)
