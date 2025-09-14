@@ -195,52 +195,73 @@ def process_whatsapp_message(body):
                 send_message(reply_buttons)
                 return
             elif button_reply_id == "parivar_pravaas_btn":
-                # Send PDF document
-                media_id = "1813897679248489"  # Replace with actual media ID
-                caption = "Parivar Pravaas PDF"
-                filename = "parivar_pravaas.pdf"
-                data = get_document_message_input(
-                    wa_id,
-                    media_id=media_id,
-                    caption=caption,
-                    filename=filename
-                )
-                pdf_response = send_message(data)
-                logging.info(f"PDF send response: {pdf_response}")
-                
-                # Wait for PDF to be sent successfully
-                time.sleep(3)
-                
-                # Send CTA buttons with proper interactive format
-                cta_data = json.dumps({
-                    "messaging_product": "whatsapp",
-                    "to": wa_id,
-                    "type": "interactive",
-                    "interactive": {
-                        "type": "button",
-                        "body": {"text": "Need help? If you want to talk to someone, use the buttons below."},
-                        "action": {
-                            "buttons": [
-                                {
-                                    "type": "reply",
-                                    "reply": {
-                                        "id": "contact_queries_btn",
-                                        "title": "Contact for Queries"
+                try:
+                    # Send PDF document
+                    media_id = "1813897679248489"  # Replace with actual media ID
+                    caption = "Parivar Pravaas PDF"
+                    filename = "parivar_pravaas.pdf"
+                    data = get_document_message_input(
+                        wa_id,
+                        media_id=media_id,
+                        caption=caption,
+                        filename=filename
+                    )
+                    pdf_response = send_message(data)
+                    logging.info(f"PDF send response: {pdf_response}")
+                    
+                    # Wait for PDF to be sent successfully
+                    time.sleep(4)
+                    
+                    # Send just a simple text message first
+                    simple_text = get_text_message_input(wa_id, "📞 Need assistance? Our team is here to help!")
+                    send_message(simple_text)
+                    
+                    # Wait another moment
+                    time.sleep(2)
+                    
+                    # Now send the buttons
+                    headers = {
+                        "Content-type": "application/json",
+                        "Authorization": f"Bearer {current_app.config['ACCESS_TOKEN']}",
+                    }
+                    url = f"https://graph.facebook.com/{current_app.config['VERSION']}/{current_app.config['PHONE_NUMBER_ID']}/messages"
+                    
+                    cta_payload = {
+                        "messaging_product": "whatsapp",
+                        "to": wa_id,
+                        "type": "interactive",
+                        "interactive": {
+                            "type": "button",
+                            "body": {"text": "Choose your preferred contact option:"},
+                            "action": {
+                                "buttons": [
+                                    {
+                                        "type": "reply",
+                                        "reply": {
+                                            "id": "contact_queries_btn",
+                                            "title": "For Queries"
+                                        }
+                                    },
+                                    {
+                                        "type": "reply",
+                                        "reply": {
+                                            "id": "contact_payment_btn",
+                                            "title": "Make Payment"
+                                        }
                                     }
-                                },
-                                {
-                                    "type": "reply",
-                                    "reply": {
-                                        "id": "contact_payment_btn",
-                                        "title": "Confirm & Make Payment"
-                                    }
-                                }
-                            ]
+                                ]
+                            }
                         }
                     }
-                })
-                cta_response = send_message(cta_data)
-                logging.info(f"CTA buttons send response: {cta_response}")
+                    
+                    cta_response = requests.post(url, json=cta_payload, headers=headers, timeout=10)
+                    logging.info(f"CTA direct API response: {cta_response.status_code} - {cta_response.text}")
+                    
+                except Exception as e:
+                    logging.error(f"Error in parivar_pravaas_btn: {e}")
+                    # Send fallback message
+                    fallback = get_text_message_input(wa_id, "For Queries: +91-8800969741\nFor Payment: +91-7054400500")
+                    send_message(fallback)
                 return
             elif button_reply_id == "contact_sales_btn":
                 number = "+91-7054400500"  # Updated to payment confirmation number
