@@ -1,22 +1,3 @@
-import time
-import threading
-def get_cta_button_input(recipient, body_text, button1_id, button1_title, button2_id, button2_title):
-    return json.dumps({
-        "messaging_product": "whatsapp",
-        "to": recipient,
-        "type": "interactive",
-        "interactive": {
-            "type": "button",
-            "body": {"text": body_text},
-            "action": {
-                "buttons": [
-                    {"type": "reply", "reply": {"id": button1_id, "title": button1_title}},
-                    {"type": "reply", "reply": {"id": button2_id, "title": button2_title}}
-                ]
-            }
-        }
-    })
-# New: Generate interactive message with reply buttons
 def get_interactive_reply_button_input(recipient, body_text, button1_id, button1_title, button2_id, button2_title):
     return json.dumps({
         "messaging_product": "whatsapp",
@@ -58,26 +39,6 @@ def get_text_message_input(recipient, text):
             "text": {"preview_url": False, "body": text},
         }
     )
-
-
-# New: Generate document message input
-def get_document_message_input(recipient, media_id=None, media_url=None, caption=None, filename=None):
-    document = {}
-    if media_id:
-        document["id"] = media_id
-    if media_url:
-        document["link"] = media_url
-    if caption:
-        document["caption"] = caption
-    if filename:
-        document["filename"] = filename
-    return json.dumps({
-        "messaging_product": "whatsapp",
-        "recipient_type": "individual",
-        "to": recipient,
-        "type": "document",
-        "document": document
-    })
 
 
 def generate_response(response):
@@ -133,208 +94,149 @@ def process_text_for_whatsapp(text):
 def process_whatsapp_message(body):
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
-
     message = body["entry"][0]["changes"][0]["value"]["messages"][0]
-    logging.info(f"Incoming WhatsApp message: {json.dumps(message)}")
 
+    # Always send the welcome message first
+    welcome_text = (
+        "Namaste from HostmenIndia!\n"
+        "✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city.\n"
+        "Choose from our curated tours and get your complete itinerary instantly."
+    )
+    welcome_msg = get_text_message_input(wa_id, welcome_text)
+    send_message(welcome_msg)
 
-    # Handle WhatsApp interactive button reply
+    # Handle interactive button replies
     if message.get("type") == "interactive":
         interactive = message.get("interactive", {})
         if interactive.get("type") == "button_reply":
             button_reply_id = interactive["button_reply"].get("id")
             if button_reply_id == "yuva_yatra_1_btn":
-                media_id = "1311569197013460"  # Replace with actual media ID
-                caption = "Yuva Yatra 1 PDF"
-                filename = "yuva_yatra_1.pdf"
-                data = get_document_message_input(
-                    wa_id,
-                    media_id=media_id,
-                    caption=caption,
-                    filename=filename
-                )
-                send_message(data)
-                # Immediately send a plain text message
-                need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
-                send_message(need_help)
-                # Send CTA buttons in a new thread after a short delay
-                # Wait a moment to ensure message order, then send reply buttons synchronously
-                time.sleep(1.5)
-                reply_buttons = get_interactive_reply_button_input(
-                    wa_id,
-                    body_text="Choose an option:",
-                    button1_id="contact_queries_btn",
-                    button1_title="Contact for Queries",
-                    button2_id="contact_payment_btn",
-                    button2_title="Confirm & Make Payment"
-                )
-                send_message(reply_buttons)
-                return
-            elif button_reply_id == "yuva_yatra_2_btn":
-                media_id = "683872947367766"  # Replace with actual media ID
-                caption = "Yuva Yatra 2 PDF"
-                filename = "yuva_yatra_2.pdf"
-                data = get_document_message_input(
-                    wa_id,
-                    media_id=media_id,
-                    caption=caption,
-                    filename=filename
-                )
-                send_message(data)
-                need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
-                send_message(need_help)
-                time.sleep(1.5)
-                reply_buttons = get_interactive_reply_button_input(
-                    wa_id,
-                    body_text="Choose an option:",
-                    button1_id="contact_queries_btn",
-                    button1_title="Contact for Queries",
-                    button2_id="contact_payment_btn",
-                    button2_title="Confirm & Make Payment"
-                )
-                send_message(reply_buttons)
-                return
-            elif button_reply_id == "parivar_pravaas_btn":
-                try:
-                    # Send PDF document
-                    media_id = "1813897679248489"  # Replace with actual media ID
-                    caption = "Parivar Pravaas PDF"
-                    filename = "parivar_pravaas.pdf"
-                    data = get_document_message_input(
-                        wa_id,
-                        media_id=media_id,
-                        caption=caption,
-                        filename=filename
-                    )
-                    pdf_response = send_message(data)
-                    logging.info(f"PDF send response: {pdf_response}")
-                    
-                    # Wait for PDF to be sent successfully
-                    time.sleep(4)
-                    
-                    # Send just a simple text message first
-                    simple_text = get_text_message_input(wa_id, "📞 Need assistance? Our team is here to help!")
-                    send_message(simple_text)
-                    
-                    # Wait another moment
-                    time.sleep(2)
-                    
-                    # Now send the buttons
-                    headers = {
-                        "Content-type": "application/json",
-                        "Authorization": f"Bearer {current_app.config['ACCESS_TOKEN']}",
+                # Send Yuva Yatra 1 PDF
+                data = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "recipient_type": "individual",
+                    "to": wa_id,
+                    "type": "document",
+                    "document": {
+                        "id": "1311569197013460",
+                        "caption": "Yuva Yatra 1 PDF",
+                        "filename": "yuva_yatra_1.pdf"
                     }
-                    url = f"https://graph.facebook.com/{current_app.config['VERSION']}/{current_app.config['PHONE_NUMBER_ID']}/messages"
-                    
-                    cta_payload = {
-                        "messaging_product": "whatsapp",
-                        "to": wa_id,
-                        "type": "interactive",
-                        "interactive": {
-                            "type": "button",
-                            "body": {"text": "Choose your preferred contact option:"},
-                            "action": {
-                                "buttons": [
-                                    {
-                                        "type": "reply",
-                                        "reply": {
-                                            "id": "contact_queries_btn",
-                                            "title": "For Queries"
-                                        }
-                                    },
-                                    {
-                                        "type": "reply",
-                                        "reply": {
-                                            "id": "contact_payment_btn",
-                                            "title": "Make Payment"
-                                        }
-                                    }
-                                ]
-                            }
+                })
+                send_message(data)
+                # Send CTA message with two call buttons
+                cta_msg = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "to": wa_id,
+                    "type": "interactive",
+                    "interactive": {
+                        "type": "cta_url",
+                        "body": {"text": "For Any Queries- Call at 8800969741, To Confirm and Make the payment- Call at 7054400500"},
+                        "action": {
+                            "name": "cta_url",
+                            "parameters": [
+                                {"display_text": "Call for Queries", "url": "tel:8800969741"},
+                                {"display_text": "Call for Payment", "url": "tel:7054400500"}
+                            ]
                         }
                     }
-                    
-                    cta_response = requests.post(url, json=cta_payload, headers=headers, timeout=10)
-                    logging.info(f"CTA direct API response: {cta_response.status_code} - {cta_response.text}")
-                    
-                except Exception as e:
-                    logging.error(f"Error in parivar_pravaas_btn: {e}")
-                    # Send fallback message
-                    fallback = get_text_message_input(wa_id, "For Queries: +91-8800969741\nFor Payment: +91-7054400500")
-                    send_message(fallback)
-                return
-            elif button_reply_id == "contact_sales_btn":
-                number = "+91-7054400500"  # Updated to payment confirmation number
-                data = get_text_message_input(wa_id, f"To Confirm and Make Payment: {number}")
-                send_message(data)
-                return
-            elif button_reply_id == "contact_queries_btn":
-                number = "+91-8800969741"  # Updated to queries number
-                data = get_text_message_input(wa_id, f"For Any Queries: Call at {number}")
-                send_message(data)
-                return
-            elif button_reply_id == "contact_payment_btn":
-                number = "+91-7054400500"  # Payment confirmation number
-                data = get_text_message_input(wa_id, f"To Confirm and Make Payment: Call at {number}")
-                send_message(data)
-                return
-            elif button_reply_id == "more_btn":
-                response = "You selected More. Please specify what you need."
-                data = get_text_message_input(wa_id, response)
-                send_message(data)
-                return
-            elif button_reply_id == "iternary_btn":
-                welcome = (
-                    "✨ Namaste from HostmenIndia! ✨\n"
-                    "Experience the grandeur of Dev Deepawali in Varanasi with handpicked itineraries designed for youth adventurers and families alike.\n\n"
-                    "Step 1 – Choose Your Experience\n"
-                    "👉 Please select your preferred tour category:\n"
-                    "1️⃣ Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻\n"
-                    "2️⃣ Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠\n"
-                    "3️⃣ Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦"
-                )
-                data = get_interactive_reply_button_input(
-                    wa_id,
-                    body_text=welcome,
-                    button1_id="yuva_yatra_1_btn",
-                    button1_title="Yuva Yatra 1",
-                    button2_id="yuva_yatra_2_btn",
-                    button2_title="Yuva Yatra 2"
-                )
-                payload = json.loads(data)
-                payload["interactive"]["action"]["buttons"].append({
-                    "type": "reply",
-                    "reply": {"id": "parivar_pravaas_btn", "title": "Parivar Pravaas"}
                 })
-                send_message(json.dumps(payload))
+                send_message(cta_msg)
+                return
+            elif button_reply_id == "yuva_yatra_2_btn":
+                # Send Yuva Yatra 2 PDF
+                data = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "recipient_type": "individual",
+                    "to": wa_id,
+                    "type": "document",
+                    "document": {
+                        "id": "683872947367766",
+                        "caption": "Yuva Yatra 2 PDF",
+                        "filename": "yuva_yatra_2.pdf"
+                    }
+                })
+                send_message(data)
+                # Send CTA message with two call buttons
+                cta_msg = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "to": wa_id,
+                    "type": "interactive",
+                    "interactive": {
+                        "type": "cta_url",
+                        "body": {"text": "For Any Queries- Call at 8800969741, To Confirm and Make the payment- Call at 7054400500"},
+                        "action": {
+                            "name": "cta_url",
+                            "parameters": [
+                                {"display_text": "Call for Queries", "url": "tel:8800969741"},
+                                {"display_text": "Call for Payment", "url": "tel:7054400500"}
+                            ]
+                        }
+                    }
+                })
+                send_message(cta_msg)
+                return
+            elif button_reply_id == "parivar_pravaas_btn":
+                # Send Parivaar Pravas PDF
+                data = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "recipient_type": "individual",
+                    "to": wa_id,
+                    "type": "document",
+                    "document": {
+                        "id": "1813897679248489",
+                        "caption": "Parivaar Pravas PDF",
+                        "filename": "parivar_pravaas.pdf"
+                    }
+                })
+                send_message(data)
+                # Send CTA message with two call buttons
+                cta_msg = json.dumps({
+                    "messaging_product": "whatsapp",
+                    "to": wa_id,
+                    "type": "interactive",
+                    "interactive": {
+                        "type": "cta_url",
+                        "body": {"text": "For Any Queries- Call at 8800969741, To Confirm and Make the payment- Call at 7054400500"},
+                        "action": {
+                            "name": "cta_url",
+                            "parameters": [
+                                {"display_text": "Call for Queries", "url": "tel:8800969741"},
+                                {"display_text": "Call for Payment", "url": "tel:7054400500"}
+                            ]
+                        }
+                    }
+                })
+                send_message(cta_msg)
+                return
+            elif button_reply_id == "customized_tour_btn":
+                # Send custom message for Customized Tour
+                custom_msg = (
+                    "Namaste from HostmenIndia!\n"
+                    "✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city.\n"
+                    "Choose from our curated tours and get your complete itinerary instantly."
+                )
+                send_message(get_text_message_input(wa_id, custom_msg))
                 return
 
-    # If user sends any text, show welcome message and three buttons
-    if message.get("type") == "text":
-        welcome = (
-            "✨ Namaste from HostmenIndia! ✨\n"
-            "Experience the grandeur of Dev Deepawali in Varanasi with handpicked itineraries designed for youth adventurers and families alike.\n\n"
-            "Step 1 – Choose Your Experience\n"
-            "👉 Please select your preferred tour category:\n"
-            "1️⃣ Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻\n"
-            "2️⃣ Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠\n"
-            "3️⃣ Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦"
-        )
-        data = get_interactive_reply_button_input(
-            wa_id,
-            body_text=welcome,
-            button1_id="yuva_yatra_1_btn",
-            button1_title="Yuva Yatra 1",
-            button2_id="yuva_yatra_2_btn",
-            button2_title="Yuva Yatra 2"
-        )
-        payload = json.loads(data)
-        payload["interactive"]["action"]["buttons"].append({
-            "type": "reply",
-            "reply": {"id": "parivar_pravaas_btn", "title": "Parivar Pravaas"}
-        })
-        send_message(json.dumps(payload))
-        return
+    # After welcome, send interactive message with 3 reply buttons (since WhatsApp only allows 2 CTA buttons)
+    button_payload = json.loads(get_interactive_reply_button_input(
+        wa_id,
+        body_text="Choose your experience:",
+        button1_id="yuva_yatra_1_btn",
+        button1_title="1️⃣ Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻",
+        button2_id="yuva_yatra_2_btn",
+        button2_title="2️⃣ Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠"
+    ))
+    # Add third button manually
+    button_payload["interactive"]["action"]["buttons"].append({
+        "type": "reply",
+        "reply": {
+            "id": "parivar_pravaas_btn",
+            "title": "3️⃣ Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦"
+        }
+    })
+    send_message(json.dumps(button_payload))
 
 
 def is_valid_whatsapp_message(body):
