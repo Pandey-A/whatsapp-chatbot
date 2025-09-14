@@ -259,27 +259,30 @@ def process_whatsapp_message(body):
 
     # Handle text messages (like "Hi", "Hello") - ONLY send welcome + buttons for text
     elif message_type == "text":
-        # Send welcome message as an image with the full welcome text as caption
-        image_media_id = current_app.config.get("IMAGE_MEDIA_ID", "")
-        welcome_text = (
-            f"Namaste {name}! 🙏\n\n"
-            "Welcome to HostmenIndia! ✨\n\n"
-            "Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city.\n\n"
-            "Choose from our curated tours and get your complete itinerary instantly:"
-        )
+        # Send image with caption first (replace <IMAGE_MEDIA_ID> with your actual media id)
         image_payload = json.dumps({
             "messaging_product": "whatsapp",
             "recipient_type": "individual",
             "to": wa_id,
             "type": "image",
             "image": {
-                "id": image_media_id,
-                "caption": welcome_text
+                "id": "792434643189920",
+                "caption": "Greetings from HostmenIndia! ✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city. Choose from our curated tours and get your complete itinerary instantly."
             }
         })
         send_message(image_payload)
+
+        # Send welcome message ONLY for text messages
+        welcome_text = (
+            f"Namaste {name}! 🙏\n\n"
+            
+        )
+        welcome_msg = get_text_message_input(wa_id, welcome_text)
+        send_message(welcome_msg)
+        
         # Send tour options
         send_tour_options(wa_id)
+        
         # IMPORTANT: Return here to prevent any further processing
         return
 
