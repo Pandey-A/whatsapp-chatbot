@@ -253,19 +253,14 @@ def process_whatsapp_message(body):
             elif button_reply_id == "customized_tour_btn":
                 # Send custom message for Customized Tour
                 custom_msg = (
-                    "🌟 *Customized Tour - From Your City* 🌟\n\n"
-                    "Thank you for choosing our customized tour option!\n\n"
-                    "✨ *What we offer:*\n"
-                    "• Departure from your city\n"
-                    "• Tailor-made inclusions based on your preferences\n"
-                    "• Flexible itinerary\n"
-                    "• Personalized experience\n\n"
-                    "Our team will help you create the perfect Dev Deepawali experience in Varanasi according to your needs and budget.\n\n"
-                    
-                    "🌍 Need guidance? 8800969741 \n"
-                    "🎟️ Lock your seat? 7054400500\n\n"
-                    "Travel dreams, one call away!\n"
-                    
+                    "Customized Tour – From Your City 🌟\n"
+                    "Your journey, your rules. ✨\n\n"
+                    "Start right from your hometown 🏠\n\n"
+                    "Handpicked inclusions, made just for you 📝\n\n"
+                    "Flexible itinerary 🗓️\n\n"
+                    "A Dev Deepawali experience as unique as you 🌌\n\n"
+                    "📞 Queries: 8800969741 | Bookings: 7054400500\n"
+                    "We’ll craft the perfect celebration of lights, tailored to you. 🪔💫"
                 )
                 send_message(get_text_message_input(wa_id, custom_msg))
         
