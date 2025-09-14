@@ -267,17 +267,17 @@ def process_whatsapp_message(body):
             "type": "image",
             "image": {
                 "id": "792434643189920",
-                "caption": f"Namaste {name}! 🙏\n\n Greetings from HostmenIndia! ✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city. Choose from our curated tours and get your complete itinerary instantly."
+                "caption": "Greetings from HostmenIndia! ✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city. Choose from our curated tours and get your complete itinerary instantly."
             }
         })
         send_message(image_payload)
 
         # Send welcome message ONLY for text messages
-        # welcome_text = (
-        #     f"Namaste {name}! 🙏\n\n"
+        welcome_text = (
+            f"Namaste {name}! 🙏\n\n"
             
-        # )
-        welcome_msg = get_text_message_input(wa_id)
+        )
+        welcome_msg = get_text_message_input(wa_id, welcome_text)
         send_message(welcome_msg)
         
         # Send tour options
