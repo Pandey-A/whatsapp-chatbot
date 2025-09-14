@@ -259,6 +259,19 @@ def process_whatsapp_message(body):
 
     # Handle text messages (like "Hi", "Hello") - ONLY send welcome + buttons for text
     elif message_type == "text":
+        # Send image with caption first (replace <IMAGE_MEDIA_ID> with your actual media id)
+        image_payload = json.dumps({
+            "messaging_product": "whatsapp",
+            "recipient_type": "individual",
+            "to": wa_id,
+            "type": "image",
+            "image": {
+                "id": "792434643189920",
+                "caption": "Namaste from HostmenIndia! ✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city. Choose from our curated tours and get your complete itinerary instantly."
+            }
+        })
+        send_message(image_payload)
+
         # Send welcome message ONLY for text messages
         welcome_text = (
             f"Namaste {name}! 🙏\n\n"
