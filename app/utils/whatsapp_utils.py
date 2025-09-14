@@ -131,28 +131,6 @@ def process_text_for_whatsapp(text):
 
 
 def process_whatsapp_message(body):
-    # If user sends 'Yes' or 'No' as a text reply
-    if message.get("type") == "text":
-        user_text = message.get("text", {}).get("body", "").strip().lower()
-        if user_text == "yes":
-            # Send the same 'Need help?' message with two buttons as after 'hi'
-            need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
-            send_message(need_help)
-            time.sleep(1.5)
-            reply_buttons = get_interactive_reply_button_input(
-                wa_id,
-                body_text="Choose an option:",
-                button1_id="contact_sales_btn",
-                button1_title="Contact to Sales Person",
-                button2_id="contact_queries_btn",
-                button2_title="Contact for Queries"
-            )
-            send_message(reply_buttons)
-            return
-        elif user_text == "no":
-            thank_you = get_text_message_input(wa_id, "Thank you for contacting us. Regards, HostmenIndia")
-            send_message(thank_you)
-            return
     wa_id = body["entry"][0]["changes"][0]["value"]["contacts"][0]["wa_id"]
     name = body["entry"][0]["changes"][0]["value"]["contacts"][0]["profile"]["name"]
 
@@ -185,10 +163,10 @@ def process_whatsapp_message(body):
                 reply_buttons = get_interactive_reply_button_input(
                     wa_id,
                     body_text="Choose an option:",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
+                    button1_id="contact_queries_btn",
+                    button1_title="Contact for Queries",
+                    button2_id="contact_payment_btn",
+                    button2_title="Confirm & Make Payment"
                 )
                 send_message(reply_buttons)
                 return
@@ -209,14 +187,15 @@ def process_whatsapp_message(body):
                 reply_buttons = get_interactive_reply_button_input(
                     wa_id,
                     body_text="Choose an option:",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
+                    button1_id="contact_queries_btn",
+                    button1_title="Contact for Queries",
+                    button2_id="contact_payment_btn",
+                    button2_title="Confirm & Make Payment"
                 )
                 send_message(reply_buttons)
                 return
             elif button_reply_id == "parivar_pravaas_btn":
+                # Send PDF document
                 media_id = "1813897679248489"  # Replace with actual media ID
                 caption = "Parivar Pravaas PDF"
                 filename = "parivar_pravaas.pdf"
@@ -226,28 +205,37 @@ def process_whatsapp_message(body):
                     caption=caption,
                     filename=filename
                 )
-                send_message(data)
-                need_help = get_text_message_input(wa_id, "Need help? If you want to talk to someone, use the buttons below.")
-                send_message(need_help)
-                time.sleep(1.5)
+                pdf_response = send_message(data)
+                logging.info(f"PDF send response: {pdf_response}")
+                
+                # Wait for PDF to be sent successfully
+                time.sleep(2)
+                
+                # Send help text with CTA buttons combined
                 reply_buttons = get_interactive_reply_button_input(
                     wa_id,
-                    body_text="Choose an option:",
-                    button1_id="contact_sales_btn",
-                    button1_title="Contact to Sales Person",
-                    button2_id="contact_queries_btn",
-                    button2_title="Contact for Queries"
+                    body_text="Need help? If you want to talk to someone, use the buttons below:",
+                    button1_id="contact_queries_btn",
+                    button1_title="Contact for Queries",
+                    button2_id="contact_payment_btn",
+                    button2_title="Confirm & Make Payment"
                 )
-                send_message(reply_buttons)
+                cta_response = send_message(reply_buttons)
+                logging.info(f"CTA buttons send response: {cta_response}")
                 return
             elif button_reply_id == "contact_sales_btn":
-                number = "+91-9876543210"  # Replace with actual sales number
-                data = get_text_message_input(wa_id, f"Contact Sales Person: {number}")
+                number = "+91-7054400500"  # Updated to payment confirmation number
+                data = get_text_message_input(wa_id, f"To Confirm and Make Payment: {number}")
                 send_message(data)
                 return
             elif button_reply_id == "contact_queries_btn":
-                number = "+91-9123456780"  # Replace with actual queries number
-                data = get_text_message_input(wa_id, f"Contact for Queries: {number}")
+                number = "+91-8800969741"  # Updated to queries number
+                data = get_text_message_input(wa_id, f"For Any Queries: Call at {number}")
+                send_message(data)
+                return
+            elif button_reply_id == "contact_payment_btn":
+                number = "+91-7054400500"  # Payment confirmation number
+                data = get_text_message_input(wa_id, f"To Confirm and Make Payment: Call at {number}")
                 send_message(data)
                 return
             elif button_reply_id == "more_btn":
