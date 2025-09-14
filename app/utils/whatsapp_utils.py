@@ -106,21 +106,21 @@ def send_tour_options(wa_id):
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_1_btn",
-                            "title": "1️⃣ Yuva Yatra 1"
+                            "title": "🏕️ Yuva Yatra 1 – Stay carefree with separate men’s and women’s dorms plus private unattached washrooms for complete comfort, hygiene, and peace of mind."
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_2_btn",
-                            "title": "2️⃣ Yuva Yatra 2"
+                            "title": "🏕️ Yuva Yatra 2 – Stay easy in mixed 👫 and female 👩 dorms, designed with attached washrooms 🚿 for convenience, comfort, and a relaxed journey ✨🛏️."
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "parivar_pravaas_btn",
-                            "title": "3️⃣ Parivaar Pravas"
+                            "title": "Parivaar Pravaas – Stay at ease with family stays that blend comfort, privacy, and a homely touch for your perfect getaway. 🌿🏡✨"
                         }
                     }
                 ]
@@ -188,7 +188,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "1311569197013460",
-                        "caption": "Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻",
+                        "caption": "",
                         "filename": "yuva_yatra_1.pdf"
                     }
                 })
@@ -212,7 +212,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "683872947367766",
-                        "caption": "Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠",
+                        "caption": "",
                         "filename": "yuva_yatra_2.pdf"
                     }
                 })
@@ -236,7 +236,7 @@ def process_whatsapp_message(body):
                     "type": "document",
                     "document": {
                         "id": "1813897679248489",
-                        "caption": "Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦",
+                        "caption": "",
                         "filename": "parivar_pravaas.pdf"
                     }
                 })
@@ -244,10 +244,9 @@ def process_whatsapp_message(body):
                 
                 # Send contact message
                 contact_msg = (
-                    "📞 *Contact Us:*\n\n"
-                    "For Any Queries: *8800969741*\n"
-                    "To Confirm and Make Payment: *7054400500*\n\n"
-                    "Our team is ready to assist you! 😊"
+                    "🌍 Need guidance? 8800969741 \n"
+                    "🎟️ Lock your seat? 7054400500\n\n"
+                    "Travel dreams, one call away!\n"
                 )
                 send_message(get_text_message_input(wa_id, contact_msg))
                 
@@ -262,9 +261,11 @@ def process_whatsapp_message(body):
                     "• Flexible itinerary\n"
                     "• Personalized experience\n\n"
                     "Our team will help you create the perfect Dev Deepawali experience in Varanasi according to your needs and budget.\n\n"
-                    "📞 *Contact Us:*\n"
-                    "For Any Queries: *8800969741*\n"
-                    "To Confirm and Make Payment: *7054400500*"
+                    
+                    "🌍 Need guidance? 8800969741 \n"
+                    "🎟️ Lock your seat? 7054400500\n\n"
+                    "Travel dreams, one call away!\n"
+                    
                 )
                 send_message(get_text_message_input(wa_id, custom_msg))
         
@@ -285,7 +286,7 @@ def process_whatsapp_message(body):
                 "type": "image",
                 "image": {
                     "id": "792434643189920",
-                    "caption": f"Namaste {name}! 🙏\n\n Greetings from HostmenIndia! ✨ Experience the spiritual grandeur of Dev Deepawali in Varanasi – from Delhi to Delhi or from your own city. Choose from our curated tours and get your complete itinerary instantly."
+                    "caption": f"Namaste {name}! 🙏\n\n 🌌 When the Ganga wears a thousand stars, you know it’s Dev Deepawali.Join us with HostmenIndia Choose Delhi departure or your city escape, and boom – itinerary at your fingertips! 📲"
                 }
             })
             send_message(image_payload)
