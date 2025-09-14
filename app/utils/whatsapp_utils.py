@@ -106,21 +106,21 @@ def send_tour_options(wa_id):
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_1_btn",
-                            "title": "1️⃣ Yuva Yatra 1 – Separate dorms & unattached washrooms for men and women 🛏️🚻 "
+                            "title": "1️⃣ Yuva Yatra 1 "
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "yuva_yatra_2_btn",
-                            "title": "2️⃣ Yuva Yatra 2 – Mixed & female dorms with attached washrooms 🏠"
+                            "title": "2️⃣ Yuva Yatra 1  "
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "parivar_pravaas_btn",
-                            "title": "3️⃣ Parivaar Pravas – Comfortable family stay options 👨‍👩‍👧‍👦 "
+                            "title": "3️⃣ Parivaar Pravaas"
                         }
                     }
                 ]
@@ -281,7 +281,7 @@ def process_whatsapp_message(body):
                 "type": "image",
                 "image": {
                     "id": "792434643189920",
-                    "caption": f"Namaste {name}! 🙏\n\n 🌌 When the Ganga wears a thousand stars, you know it’s Dev Deepawali.Join us with HostmenIndia Choose Delhi departure or your city escape, and boom – itinerary at your fingertips! 📲"
+                    "caption": f"Namaste {name}! 🙏\n\n 🌌 When the Ganga wears a thousand stars, you know it’s Dev Deepawali.Join us with HostmenIndia \n Choose Delhi departure or your city escape, and boom – itinerary at your fingertips \n\n Send 1 for -Yuva Yatra 1 – Stay carefree with separate men’s and women’s dorms plus private unattached washrooms for complete comfort, hygiene, and peace of mind.\n\n Send 2  for - Yuva Yatra 2 – Stay easy in mixed 👫 and female 👩 dorms, designed with attached washrooms 🚿 for convenience, comfort, and a relaxed journey.\n\n Send 3 for Parivaar Pravaas – Stay at ease with family stays that blend comfort, privacy, and a homely touch for your perfect getaway.\n\n Send 4 for- Customized Tour – From Your City ,Your journey, your rules. Start right from your hometown Handpicked inclusions, made just for you Flexible itinerary 🗓️\n A Dev Deepawali experience as unique as you 🌌"
                 }
             })
             send_message(image_payload)
